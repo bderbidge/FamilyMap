@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RadioGroup;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.example.brandonderbidge.familymapserver.Model;
@@ -57,7 +57,9 @@ public class LoginFragment extends Fragment {
 
     private EditText emailEditText;
 
-    private RadioGroup genderEditButton;
+    private RadioButton maleEditButton;
+
+    private RadioButton femaleEditButton;
 
     private Button loginButton;
 
@@ -118,8 +120,8 @@ public class LoginFragment extends Fragment {
         firstNameEditText = (EditText) v.findViewById(R.id.edit_first_name);
         lastNameEditText = (EditText) v.findViewById(R.id.edit_last_name);
         emailEditText = (EditText) v.findViewById(R.id.edit_email);
-        genderEditButton = (RadioGroup) v.findViewById(R.id.radio_gender);
-
+        maleEditButton = (RadioButton) v.findViewById(R.id.radioButton_male);
+        femaleEditButton = (RadioButton) v.findViewById(R.id.radioButton_female);
 
 
         return v;
@@ -160,7 +162,7 @@ public class LoginFragment extends Fragment {
                     "http",
                     Model.getServerHost(),
                     Model.getServerPort(),
-                    "/user/Register"
+                    "/user/register"
             );
 
 
@@ -196,7 +198,7 @@ public class LoginFragment extends Fragment {
         register.setlastName(lastNameEditText.getText().toString());
         register.setEmail(emailEditText.getText().toString());
 
-        if(genderEditButton.toString().equals("Male"))
+        if(maleEditButton.isChecked())
             register.setGender("m");
         else
             register.setGender("f");
@@ -218,12 +220,12 @@ public class LoginFragment extends Fragment {
 
             String response;
             Server server = new Server();
+            String url = "http://"+ Model.getServerHost() + ":" + Model.getServerPort() +
+                    "/user/register";
+            if(urls[0].toString().equals(url)){
 
-            if(urls[0].equals("http"+ Model.getServerHost() + Model.getServerPort() +
-                    "/user/Register")){
 
-
-                response = server.login(urls[0]);
+                response = server.register(urls[0]);
 
                 if (!response.equals("Unable to Register the User")) {
                     Gson gson = new Gson();
@@ -337,9 +339,6 @@ public class LoginFragment extends Fragment {
                 String personEventResponse;
 
                  personEventResponse =  server.getEvents(urls[1]);
-
-
-
 
 
                  personEventResponse = server.getPeople(urls[2]);

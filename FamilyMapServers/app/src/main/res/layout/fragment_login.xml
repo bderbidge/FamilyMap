@@ -132,6 +132,7 @@
             android:id="@+id/radio_gender"
             android:layout_width="167dp"
             android:layout_height="wrap_content"
+            android:checkedButton="@+id/radioButton_female"
             android:orientation="horizontal">
 
             <RadioButton

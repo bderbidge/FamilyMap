@@ -60,7 +60,9 @@ public class Server {
             reqBody.close();
 
 
-            if(respData.equals("{\"message\":\"Failed to Register User\"}"))
+            if(respData.equals("{\"message\":\"Failed to Register User\"}") ||
+                    respData.equals("{\"message\":\"Failed to Register User because the" +
+                            " input was invalid.\"}"))
                 respData = "Unable to Register the User";
 
             // By the time we get here, the HTTP response has been received from the server.
