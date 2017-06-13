@@ -1,8 +1,9 @@
 package com.example.brandonderbidge.familymapserver.Fragments;
 
-import android.app.Fragment;
+
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,15 +24,21 @@ import java.net.URL;
 
 import Models.Login;
 import Request.RegisterRequest;
+import Response.EventsResponse;
+import Response.PeopleResponse;
 import Response.PersonResponse;
 import Response.RegisterLoginResponse;
-
 
 /**
  * A placeholder fragment containing a simple view.
  */
 public class LoginFragment extends Fragment {
 
+    private static Callback callback;
+
+    public interface Callback{
+       void onLogin();
+    }
 
     private static String username;
 
@@ -75,15 +82,11 @@ public class LoginFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    public static LoginFragment newInstance(Login login) {
+    public static LoginFragment newInstance( Callback callback) {
 
+        LoginFragment.callback = callback;
         LoginFragment fragment = new LoginFragment();
-        Bundle args = new Bundle();
-        args.putString(username, login.getusername());
-        args.putString(password, login.getPassword());
-        args.putString(serverHost, Model.getServerHost());
-        args.putInt(String.valueOf(serverPort), Model.getServerPort());
-        fragment.setArguments(args);
+
         return fragment;
 
     }
@@ -148,6 +151,7 @@ public class LoginFragment extends Fragment {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
+
 
 
     }
@@ -292,11 +296,14 @@ public class LoginFragment extends Fragment {
                     task.execute(url, url2, url3);
 
 
+
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                 }
 
+
                 //display in short period of time
+
             }else {
 
                 Toast.makeText(getContext(),response,
@@ -320,17 +327,18 @@ public class LoginFragment extends Fragment {
             String response = server.getPerson(urls[0]);
 
             if (!response.equals("Unable to get Person") && !response.equals("Invalid AuthToken")) {
+
                 Gson gson = new Gson();
                 PersonResponse personResponse;
                 personResponse = gson.fromJson(response, PersonResponse.class);
 
                 Model.getCurrentPerson().setId(personResponse.getpersonID());
-                Model.getCurrentPerson().setFirstName(personResponse.getpersonID());
-                Model.getCurrentPerson().setLastName(personResponse.getpersonID());
-                Model.getCurrentPerson().setGender(personResponse.getpersonID());
-                Model.getCurrentPerson().setFatherID(personResponse.getpersonID());
-                Model.getCurrentPerson().setMotherID(personResponse.getpersonID());
-                Model.getCurrentPerson().setSpouseID(personResponse.getpersonID());
+                Model.getCurrentPerson().setFirstName(personResponse.getfirstName());
+                Model.getCurrentPerson().setLastName(personResponse.getlastName());
+                Model.getCurrentPerson().setGender(personResponse.getgender());
+                Model.getCurrentPerson().setFatherID(personResponse.getfather());
+                Model.getCurrentPerson().setMotherID(personResponse.getmother());
+                Model.getCurrentPerson().setSpouseID(personResponse.getspouse());
                 Model.getCurrentPerson().setUsername(personResponse.getdescendant());
 
                 response = personResponse.getfirstName() + " " + personResponse.getlastName() +
@@ -338,11 +346,17 @@ public class LoginFragment extends Fragment {
 
                 String personEventResponse;
 
-                 personEventResponse =  server.getEvents(urls[1]);
+                personEventResponse =  server.getEvents(urls[1]);
 
+                EventsResponse eventsResponse = gson.fromJson(personEventResponse,EventsResponse.class);
 
-                 personEventResponse = server.getPeople(urls[2]);
+                Model.setEvents(eventsResponse);
 
+                personEventResponse = server.getPeople(urls[2]);
+
+                PeopleResponse peopleResponse = gson.fromJson(personEventResponse,PeopleResponse.class);
+
+                Model.setPeople(peopleResponse);
 
 
 
@@ -354,8 +368,12 @@ public class LoginFragment extends Fragment {
 
         protected void onPostExecute(String response){
 
+
             Toast.makeText(getContext(),response,
                     Toast.LENGTH_SHORT).show();
+
+            callback.onLogin();
+
         }
 
     }

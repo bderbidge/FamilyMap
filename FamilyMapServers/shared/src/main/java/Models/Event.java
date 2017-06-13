@@ -6,7 +6,7 @@ import java.util.UUID;
  * Created by brandonderbidge on 5/18/17.
  */
 
-public class Event {
+public class Event implements Comparable {
 
     private String ID;
     private String Username;
@@ -93,5 +93,18 @@ public class Event {
 
     public void setYear(int year) {
         Year = year;
+    }
+
+    @Override
+    public int compareTo(Object compareEvent) {
+
+        int compareyear=((Event) compareEvent).getYear();
+        /* For Ascending order*/
+        return this.getYear()-compareyear;
+    }
+
+    @Override
+    public String toString() {
+        return getEventType() + ": "+ getCity() + ", " + getCountry() + " ( " + getYear() + " )";
     }
 }

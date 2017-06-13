@@ -6,10 +6,9 @@ import java.util.List;
 import DataAccess.DatabaseDAO;
 import DataAccess.DatabaseException;
 import Models.Event;
-import Models.Person;
+import Request.GeneralIDRequest;
 import Response.EventResponse;
 import Response.EventsResponse;
-import Request.GeneralIDRequest;
 
 /**
  * Created by brandonderbidge on 5/19/17.
@@ -61,6 +60,7 @@ public class EventService {
             temEvent.setlatitude(e.getLatitude());
             temEvent.setlongitude(e.getLongitude());
             temEvent.setyear(e.getYear());
+            temEvent.setPersonID(e.getPersonId());
 
 
             eventsResponse.getevents().add(temEvent);
@@ -107,6 +107,7 @@ public class EventService {
                 response.seteventType(events.get(0).getEventType());
                 response.setlatitude(events.get(0).getLatitude());
                 response.setlongitude(events.get(0).getLongitude());
+                response.setPersonID(events.get(0).getPersonId());
             }
             else {
                 response = null;

@@ -1,5 +1,6 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -162,7 +163,8 @@
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="11dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:id="@+id/linearLayout">
 
             <Button
                 android:id="@+id/btn_register"
@@ -178,5 +180,7 @@
                 android:layout_weight="0.35"
                 android:text="Login" />
         </LinearLayout>
+
+
     </RelativeLayout>
 </LinearLayout>

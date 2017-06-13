@@ -4,6 +4,13 @@ package Server;
 /**
  * Created by brandonderbidge on 5/24/17.
  */
+import com.sun.net.httpserver.HttpServer;
+
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.UnknownHostException;
+
 import DataAccess.DatabaseDAO;
 import Handlers.ClearHandler;
 import Handlers.DefaultHandler;
@@ -13,9 +20,6 @@ import Handlers.LoadHandler;
 import Handlers.LoginHandler;
 import Handlers.PersonHandler;
 import Handlers.RegisterHandler;
-import java.io.*;
-import java.net.*;
-import com.sun.net.httpserver.*;
 
 /*
 	This example demonstrates the basic structure of the Family Map Server
@@ -123,6 +127,11 @@ public class Server {
         // in the background.
         server.start();
 
+        try {
+            System.out.println(InetAddress.getLocalHost().getHostAddress());
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
         // Log message indicating that the server has successfully started.
         System.out.println("Server started");
     }

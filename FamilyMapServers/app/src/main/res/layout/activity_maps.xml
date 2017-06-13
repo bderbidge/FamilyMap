@@ -1,0 +1,67 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1">
+
+
+<fragment xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/map"
+    android:name="com.google.android.gms.maps.SupportMapFragment"
+    android:layout_width="match_parent"
+    android:layout_height="363dp"
+    tools:context="com.example.brandonderbidge.familymapserver.Fragments.MapFragment" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/icon_gender"
+                android:layout_width="111dp"
+                android:layout_height="92dp"
+                android:layout_gravity="center"
+                app:srcCompat="@mipmap/ic_launcher"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentTop="true" />
+
+
+            <TextView
+
+                android:id="@+id/map_event"
+                android:layout_width="match_parent"
+                android:layout_height="85dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:layout_gravity="bottom"
+                android:layout_toEndOf="@+id/icon_gender"
+                android:text="this is description "
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium">
+
+            </TextView>
+
+            <TextView
+                android:id="@+id/mapName"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_above="@+id/map_event"
+                android:layout_alignParentEnd="true"
+                android:layout_toEndOf="@+id/icon_gender"
+                android:text="Hello"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium">
+
+            </TextView>
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+</LinearLayout>

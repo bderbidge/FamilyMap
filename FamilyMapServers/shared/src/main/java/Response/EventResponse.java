@@ -18,6 +18,15 @@ public class EventResponse {
     private String city;
     private String eventType;
     private int year;
+    private String personID;
+
+    public String getPersonID() {
+        return personID;
+    }
+
+    public void setPersonID(String personID) {
+        this.personID = personID;
+    }
 
 
     public String getdescendant() {

@@ -1,14 +1,16 @@
 package com.example.brandonderbidge.familymapserver.Activities;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
+
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 
 import com.example.brandonderbidge.familymapserver.Fragments.LoginFragment;
+import com.example.brandonderbidge.familymapserver.Fragments.MapFragment;
 import com.example.brandonderbidge.familymapserver.Model;
+import com.example.brandonderbidge.familymapserver.R;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LoginFragment.Callback {
 
 
 
@@ -17,22 +19,38 @@ public class MainActivity extends AppCompatActivity {
 
 
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
 
 
+        FragmentManager fm = getSupportFragmentManager();
 
-        FragmentManager fm = getFragmentManager();
-
-        FragmentTransaction fragmentTransaction = fm.beginTransaction();
 
         if (Model.getCurrentPerson() == null) {
 
-            LoginFragment login = new LoginFragment();
+
+            LoginFragment login = LoginFragment.newInstance(MainActivity.this);;
             Model.init();
-            fragmentTransaction.replace(android.R.id.content, login);
+
+            fm.beginTransaction().add(R.id.fragContainer, login).commit();
 
         }
-        fragmentTransaction.commit();
+        else {
+
+            MapFragment mapsActivity = new MapFragment();
+            fm.beginTransaction().add(R.id.fragContainer, mapsActivity).commit();
+
+        }
+
+
+    }
+
+    public void onLogin(){
+
+        FragmentManager fm = getSupportFragmentManager();
+        MapFragment mapsActivity = new MapFragment();
+        fm.beginTransaction().replace(R.id.fragContainer,mapsActivity).commit();
+
     }
 
 
