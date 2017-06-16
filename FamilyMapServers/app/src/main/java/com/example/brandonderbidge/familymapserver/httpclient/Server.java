@@ -190,7 +190,7 @@ public class Server {
                 // occurred, so print out the message from the HTTP response
                 System.out.println("ERROR: " + connection.getResponseMessage());
 
-                respData = "Unable to get Person";
+                respData = "Unable to get PersonActivity";
             }
 
 
@@ -209,14 +209,14 @@ public class Server {
                 // occurred, so print out the message from the HTTP response
                 System.out.println("ERROR: " + connection.getResponseMessage());
 
-                respData = "Unable to get Person";
+                respData = "Unable to get PersonActivity";
             }
         }
         catch (IOException e) {
             // An exception was thrown, so display the exception's stack trace
             e.printStackTrace();
 
-            respData = "Unable to get Person";
+            respData = "Unable to get PersonActivity";
         }
 
         if(respData.equals("{\"message\":\"AuthToken is not valid\"}"))
@@ -255,7 +255,7 @@ public class Server {
                 // occurred, so print out the message from the HTTP response
                 System.out.println("ERROR: " + connection.getResponseMessage());
 
-                respData = "Unable to get Person";
+                respData = "Unable to get PersonActivity";
             }
 
 
@@ -274,14 +274,14 @@ public class Server {
                 // occurred, so print out the message from the HTTP response
                 System.out.println("ERROR: " + connection.getResponseMessage());
 
-                respData = "Unable to get Person";
+                respData = "Unable to get PersonActivity";
             }
         }
         catch (IOException e) {
             // An exception was thrown, so display the exception's stack trace
             e.printStackTrace();
 
-            respData = "Unable to get Person";
+            respData = "Unable to get PersonActivity";
         }
 
         if(respData.equals("{\"message\":\"AuthToken is not valid\"}"))
@@ -319,7 +319,7 @@ public class Server {
                 // occurred, so print out the message from the HTTP response
                 System.out.println("ERROR: " + connection.getResponseMessage());
 
-                respData = "Unable to get Person";
+                respData = "Unable to get PersonActivity";
             }
 
 
@@ -338,14 +338,14 @@ public class Server {
                 // occurred, so print out the message from the HTTP response
                 System.out.println("ERROR: " + connection.getResponseMessage());
 
-                respData = "Unable to get Person";
+                respData = "Unable to get PersonActivity";
             }
         }
         catch (IOException e) {
             // An exception was thrown, so display the exception's stack trace
             e.printStackTrace();
 
-            respData = "Unable to get Person";
+            respData = "Unable to get PersonActivity";
         }
 
         if(respData.equals("{\"message\":\"AuthToken is not valid\"}"))

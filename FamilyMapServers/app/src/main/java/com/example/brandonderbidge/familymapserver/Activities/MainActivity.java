@@ -9,6 +9,8 @@ import com.example.brandonderbidge.familymapserver.Fragments.LoginFragment;
 import com.example.brandonderbidge.familymapserver.Fragments.MapFragment;
 import com.example.brandonderbidge.familymapserver.Model;
 import com.example.brandonderbidge.familymapserver.R;
+import com.joanzapata.iconify.Iconify;
+import com.joanzapata.iconify.fonts.FontAwesomeModule;
 
 public class MainActivity extends AppCompatActivity implements LoginFragment.Callback {
 
@@ -20,7 +22,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Cal
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        Iconify.with(new FontAwesomeModule());
 
 
         FragmentManager fm = getSupportFragmentManager();
@@ -49,6 +51,11 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Cal
 
         FragmentManager fm = getSupportFragmentManager();
         MapFragment mapsActivity = new MapFragment();
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("mapActivity", false);
+
+        mapsActivity.setArguments(bundle);
+
         fm.beginTransaction().replace(R.id.fragContainer,mapsActivity).commit();
 
     }

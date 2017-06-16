@@ -326,7 +326,7 @@ public class LoginFragment extends Fragment {
 
             String response = server.getPerson(urls[0]);
 
-            if (!response.equals("Unable to get Person") && !response.equals("Invalid AuthToken")) {
+            if (!response.equals("Unable to get PersonActivity") && !response.equals("Invalid AuthToken")) {
 
                 Gson gson = new Gson();
                 PersonResponse personResponse;

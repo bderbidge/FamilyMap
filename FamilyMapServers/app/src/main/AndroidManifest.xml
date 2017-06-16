@@ -40,7 +40,14 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-
+        <activity
+            android:name=".Activities.PersonActivity"
+            android:label="@string/title_activity_person"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Activities.MapActivity"
+            android:label="@string/title_activity_map_event" />
+        <activity android:name=".Activities.FilterActivity"></activity>
     </application>
 
 </manifest>

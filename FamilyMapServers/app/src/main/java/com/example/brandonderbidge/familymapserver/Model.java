@@ -1,6 +1,5 @@
 package com.example.brandonderbidge.familymapserver;
 
-import com.example.brandonderbidge.familymapserver.Activities.MainActivity;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.Polyline;
 
@@ -40,10 +39,13 @@ public class Model {
         connections = new LinkedList<>();
         eventMarkerToEvents = new HashMap<>();
         eventMarkerToPerson = new HashMap<>();
+        personToChildren = new HashMap<>();
+        eventTypeToColor = new HashMap<>();
+        eventTypeMap = new HashMap<>();
+        sortedEvents = new HashMap<>();
 
     }
 
-    private static MainActivity mainActivity;
 
     private static Person currentPerson;
 
@@ -65,6 +67,10 @@ public class Model {
 
     private static Set<String> eventTypes;
 
+    private static Map<String, Boolean> eventTypeMap;
+
+    private static Map<String, Float> eventTypeToColor;
+
     private static Map<String, Event> events;
 
     private static Map<Marker, Event> eventMarkerToEvents;
@@ -77,14 +83,42 @@ public class Model {
 
     private static Map<Person, List<Event>> personToEvents;
 
+    private static Map<String, List<Person>> personToChildren;
 
+    private static boolean filters;
+
+    private static Map<String, Event> sortedEvents;
+
+
+
+    public static boolean isFilters() {
+
+        filters = false;
+
+        for( Map.Entry<String, Boolean> entry :eventTypeMap.entrySet()){
+
+            if(entry.getValue() == false)
+                filters = true;
+
+        }
+
+        return filters;
+    }
+
+    public static Map<String, Boolean> getEventTypeMap() {
+        return eventTypeMap;
+    }
+
+    public static Map<String, Float> getEventTypeToColor() {
+        return eventTypeToColor;
+    }
+
+    public static Map<String, List<Person>> getPersonToChildren() {
+        return personToChildren;
+    }
 
     public static Map<Marker, Person> getEventMarkerToPerson() {
         return eventMarkerToPerson;
-    }
-
-    public static void setEventMarkerToPerson(Map<Marker, Person> eventMarkerToPerson) {
-        Model.eventMarkerToPerson = eventMarkerToPerson;
     }
 
     public static void clearPolyline(){
@@ -103,20 +137,12 @@ public class Model {
         return connections;
     }
 
-    public static void setConnections(List<Polyline> connections) {
-        Model.connections = connections;
-    }
-
     public static Map<Person, List<Event>> getPersonToEvents() {
         return personToEvents;
     }
 
     public static Map<Marker, Event> getEventMarkerToEvents() {
         return eventMarkerToEvents;
-    }
-
-    public static void setEventMarkerToEvents(Map<Marker, Event> eventMarkerToEvents) {
-        Model.eventMarkerToEvents = eventMarkerToEvents;
     }
 
     public static RegisterRequest getRegister() {
@@ -184,6 +210,8 @@ public class Model {
 
             tempPeople.put(id, tempPerson);
 
+            addChildren(tempPerson);
+
         }
 
         Model.people = tempPeople;
@@ -193,16 +221,144 @@ public class Model {
         personToEvents();
     }
 
+    public static void addChildren(Person tempPerson){
+
+        if(!tempPerson.getFatherID().equals(" ")) {
+            if (personToChildren.containsKey(tempPerson.getFatherID())){
+
+                personToChildren.get(tempPerson.getFatherID()).add(tempPerson);
+
+            }else{
+
+                List<Person> personList = new LinkedList<>();
+
+                personList.add(tempPerson);
+                personToChildren.put(tempPerson.getFatherID(), personList);
+
+            }
+        }
+
+        if(!tempPerson.getMotherID().equals(" ")) {
+
+            if (personToChildren.containsKey(tempPerson.getMotherID())) {
+
+                personToChildren.get(tempPerson.getMotherID()).add(tempPerson);
+
+            } else {
+
+                List<Person> personList = new LinkedList<>();
+                personList.add(tempPerson);
+                personToChildren.put(tempPerson.getMotherID(), personList);
+            }
+        }
+
+
+    }
+
     public static Person getCurrentPerson() {
         return currentPerson;
     }
 
-    public static void setCurrentPerson(Person currentPerson) {
-        Model.currentPerson = currentPerson;
+    public static Map<String, Event> getSortedList(){
+
+
+        if(sortedEvents.size() > 1)
+            sortedEvents.clear();
+
+
+        // first check if maternal or paternal are turned on
+
+
+       if(eventTypeMap.get("Father's Side") && eventTypeMap.get("Mother's Side")){
+
+           checkEvents(events);
+
+        }
+        else if(eventTypeMap.get("Father's Side") || eventTypeMap.get("Mother's Side")) {
+
+           Map<String, Event> tempEvents = new HashMap<>();
+            if (!eventTypeMap.get("Father's Side")) {
+
+
+                for (String person : maternalAncestors) {
+
+                    for (Event event : personToEvents.get(people.get(person))) {
+
+                      tempEvents.put(event.getID(), event);
+
+                    }
+                }
+
+                checkEvents(tempEvents);
+
+            }
+
+
+            if (!eventTypeMap.get("Mother's Side")) {
+
+
+                for (String person : paternalAncestors) {
+
+                    for (Event event : personToEvents.get(people.get(person))){
+
+                        tempEvents.put(event.getID(), event);
+
+                    }
+
+                }
+
+                checkEvents(tempEvents);
+            }
+
+        }
+
+        return sortedEvents;
+
     }
 
-    public static Set<String> getMaternalAncestors() {
-        return maternalAncestors;
+    private static void checkEvents( Map<String, Event> tempEvents ){
+
+
+        for (Map.Entry<String, Event> entry : tempEvents.entrySet()) {
+
+            if (eventTypeMap.get(entry.getValue().getEventType())) {
+
+                checkGender(entry.getValue().getPersonId(), entry.getValue(), entry.getValue().getID());
+            }
+
+        }
+
+    }
+
+    private static void checkGender(String person, Event event, String eventID){
+
+
+        if( eventTypeMap.get("By Male") || eventTypeMap.get("By Female")){
+
+
+            //if the Male button is switched but the Female is not then it adds the females
+            if (!eventTypeMap.get("By Male") && eventTypeMap.get("By Female") ) {
+
+                if(people.get(person).getGender().equals("f"))
+                    sortedEvents.put(eventID, event);
+
+            }
+            else if( eventTypeMap.get("By Male") && !eventTypeMap.get("By Female")) {
+
+                if(people.get(person).getGender().equals("m"))
+                    sortedEvents.put(eventID, event);
+
+            }else {
+
+                sortedEvents.put(eventID, event);
+
+            }
+
+
+        }
+
+
+
     }
 
 
@@ -212,11 +368,12 @@ public class Model {
         boolean found = true;
         String motherSideID = Model.getCurrentPerson().getMotherID();
 
-       maternalAncestors = findAncestors(motherSideID,maternalAncestors);
+        maternalAncestors.add(Model.getCurrentPerson().getId());
+
+        maternalAncestors = findAncestors(motherSideID,maternalAncestors);
 
         Model.maternalAncestors = maternalAncestors;
     }
-
 
     private static Set<String> findAncestors(String id, Set<String> ancestor){
 
@@ -241,27 +398,17 @@ public class Model {
         return ancestor;
     }
 
-
-
-    public static Set<String> getPaternalAncestors() {
-        return paternalAncestors;
-    }
-
-
     public static void setPaternalAncestors() {
 
         Set<String> paternalAncestors = new HashSet<>();
 
         String fatherSideID = Model.getCurrentPerson().getFatherID();
+        paternalAncestors.add(Model.getCurrentPerson().getId());
 
-       paternalAncestors = findAncestors(fatherSideID,paternalAncestors);
+        paternalAncestors = findAncestors(fatherSideID,paternalAncestors);
 
 
         Model.paternalAncestors = paternalAncestors;
-    }
-
-    public static void setEventTypes(Set<String> eventTypes) {
-        Model.eventTypes = eventTypes;
     }
 
     public static Set<String> getEventTypes() {
@@ -296,8 +443,30 @@ public class Model {
             eventTypes.add(event.geteventType());
         }
 
-        Model.events = tempEvents;
 
+        if(Model.getEventTypes() != null){
+
+            float num = 5;
+
+            for (String eventType: Model.getEventTypes()) {
+
+                Model.getEventTypeToColor().put(eventType, num);
+                Model.getEventTypeMap().put(eventType, true);
+
+                num += 75;
+                num %= 360;
+
+            }
+
+            Model.getEventTypeMap().put("Father's Side", true);
+            Model.getEventTypeMap().put("Mother's Side", true);
+            Model.getEventTypeMap().put("By Male", true);
+            Model.getEventTypeMap().put("By Female", true);
+        }
+
+
+        Model.events = tempEvents;
+        
 
     }
 
@@ -329,8 +498,6 @@ public class Model {
 
 
     }
-
-
 
     public static Person getFocusedPerson() {
         return focusedPerson;
