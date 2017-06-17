@@ -606,20 +606,22 @@ public class DatabaseDAO {
     public void setFill() throws FileNotFoundException {
         Gson gson = new Gson();
 
-        Reader reader = new FileReader("/Users/brandonderbidge/Documents/AndroidStudioProjects/" +
-                "FamilyMapServer/MapServerlib/familymapserver/data/json/locations.json");
+
+
+        Reader reader = new FileReader("/Users/brandonderbidge/Documents/CS240/FamilyMap" +
+                "/FamilyMapServers/MapServerlib/familymapserver/data/json/locations.json");
         LocationData locData = gson.fromJson(reader, LocationData.class);
 
-        Reader reader2 = new FileReader("/Users/brandonderbidge/Documents/AndroidStudioProjects/" +
-                "FamilyMapServer/MapServerlib/familymapserver/data/json/fnames.json");
+        Reader reader2 = new FileReader("/Users/brandonderbidge/Documents/CS240/FamilyMap" +
+                "/FamilyMapServers/MapServerlib/familymapserver/data/json/fnames.json");
         FemaleNames fnames = gson.fromJson(reader2, FemaleNames.class);
 
-        Reader reader3 = new FileReader("/Users/brandonderbidge/Documents/AndroidStudioProjects/" +
-                "FamilyMapServer/MapServerlib/familymapserver/data/json/snames.json");
+        Reader reader3 = new FileReader("/Users/brandonderbidge/Documents/CS240/FamilyMap" +
+                "/FamilyMapServers/MapServerlib/familymapserver/data/json/snames.json");
         LastNames snames = gson.fromJson(reader3, LastNames.class);
 
-        Reader reader4 = new FileReader("/Users/brandonderbidge/Documents/AndroidStudioProjects/" +
-                "FamilyMapServer/MapServerlib/familymapserver/data/json/mnames.json");
+        Reader reader4 = new FileReader("/Users/brandonderbidge/Documents/CS240/FamilyMap" +
+                "/FamilyMapServers/MapServerlib/familymapserver/data/json/mnames.json");
         MaleNames mnames = gson.fromJson(reader4, MaleNames.class);
 
         this.locationData = locData;
