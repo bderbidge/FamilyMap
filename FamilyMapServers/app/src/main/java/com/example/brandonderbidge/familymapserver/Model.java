@@ -367,7 +367,6 @@ public class Model {
 
     }
 
-
     private static void setMaternalAncestors() {
 
         Set<String> maternalAncestors = new HashSet<>();
@@ -511,6 +510,26 @@ public class Model {
 
     public static void setFocusedPerson(Person focusedPerson) {
         Model.focusedPerson = focusedPerson;
+    }
+
+    public static void clearModel(){
+
+
+        people = new HashMap<>();
+        maternalAncestors = new HashSet<>();
+        paternalAncestors = new HashSet<>();
+        eventTypes = new HashSet<>();
+        events = new HashMap<>();
+        personToEvents = new HashMap<>();
+        connections = new LinkedList<>();
+        eventMarkerToEvents = new HashMap<>();
+        eventMarkerToPerson = new HashMap<>();
+        personToChildren = new HashMap<>();
+        eventTypeToColor = new HashMap<>();
+        eventTypeMap = new HashMap<>();
+        sortedEvents = new HashMap<>();
+        setting = new Settings();
+
     }
 
 }

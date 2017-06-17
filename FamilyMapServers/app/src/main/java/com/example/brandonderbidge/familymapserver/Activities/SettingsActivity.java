@@ -1,6 +1,7 @@
 package com.example.brandonderbidge.familymapserver.Activities;
 
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -9,11 +10,20 @@ import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.Spinner;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import com.example.brandonderbidge.familymapserver.Model;
 import com.example.brandonderbidge.familymapserver.R;
+import com.example.brandonderbidge.familymapserver.httpclient.Server;
+import com.google.gson.Gson;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Map;
+
+import Response.EventsResponse;
+import Response.PeopleResponse;
+import Response.PersonResponse;
 
 public class SettingsActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
@@ -24,6 +34,11 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
     Switch lifeSwitch;
     Switch familySwitch;
     Switch spouseSwitch;
+    TextView reSync;
+    TextView logout;
+    Callback callback;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +50,8 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
         lifeSwitch = (Switch) findViewById( R.id.life_story_switch);
         familySwitch = (Switch) findViewById(R.id.family_switch);
         spouseSwitch = (Switch) findViewById(R.id.spouse_switch);
+        reSync = (TextView) findViewById(R.id.ReSync);
+        logout = (TextView) findViewById(R.id.logout);
 
         lifeSwitch.setChecked(Model.getSetting().isLifeStoryBool());
         familySwitch.setChecked(Model.getSetting().isFamilyTreeBool());
@@ -116,6 +133,53 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
                 Model.getSetting().setFamilyTreeBool(isChecked);
             }
         });
+
+        reSync.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Model.clearModel();
+            try{
+
+                URL url = new URL(
+                        "http",
+                        Model.getServerHost(),
+                        Model.getServerPort(),
+                        "/person/" + Model.getCurrentPerson().getId()
+
+                );
+
+                URL url2 = new URL(
+                        "http",
+                        Model.getServerHost(),
+                        Model.getServerPort(),
+                        "/event/"
+
+                );
+
+
+                URL url3 = new URL(
+                        "http",
+                        Model.getServerHost(),
+                        Model.getServerPort(),
+                        "/person/"
+
+                );
+
+                dataTask task = new dataTask();
+                task.execute(url, url2, url3);
+
+
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+
+        }
+        });
+
+
+
 
     }
 
@@ -205,6 +269,68 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
+
+    }
+
+    public interface Callback{
+
+    }
+
+    public class dataTask extends AsyncTask<URL, Void, String> {
+
+
+        protected String doInBackground(URL... urls) {
+
+            if (android.os.Debug.isDebuggerConnected())
+                android.os.Debug.waitForDebugger();
+
+            Server server = new Server();
+
+            String response = server.getPerson(urls[0]);
+
+            if (!response.equals("Unable to get PersonActivity") && !response.equals("Invalid AuthToken")) {
+
+                Gson gson = new Gson();
+                PersonResponse personResponse;
+                personResponse = gson.fromJson(response, PersonResponse.class);
+
+                Model.getCurrentPerson().setId(personResponse.getpersonID());
+                Model.getCurrentPerson().setFirstName(personResponse.getfirstName());
+                Model.getCurrentPerson().setLastName(personResponse.getlastName());
+                Model.getCurrentPerson().setGender(personResponse.getgender());
+                Model.getCurrentPerson().setFatherID(personResponse.getfather());
+                Model.getCurrentPerson().setMotherID(personResponse.getmother());
+                Model.getCurrentPerson().setSpouseID(personResponse.getspouse());
+                Model.getCurrentPerson().setUsername(personResponse.getdescendant());
+
+                response = personResponse.getfirstName() + " " + personResponse.getlastName() +
+                        " has logged in successfully.";
+
+                String personEventResponse;
+
+                personEventResponse =  server.getEvents(urls[1]);
+
+                EventsResponse eventsResponse = gson.fromJson(personEventResponse,EventsResponse.class);
+
+                Model.setEvents(eventsResponse);
+
+                personEventResponse = server.getPeople(urls[2]);
+
+                PeopleResponse peopleResponse = gson.fromJson(personEventResponse,PeopleResponse.class);
+
+                Model.setPeople(peopleResponse);
+
+
+
+
+            }
+            return response;
+        }
+
+
+        protected void onPostExecute(String response){
+
+        }
 
     }
 }

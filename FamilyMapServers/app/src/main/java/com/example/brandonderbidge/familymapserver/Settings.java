@@ -1,8 +1,21 @@
 package com.example.brandonderbidge.familymapserver;
 
 import android.graphics.Color;
+import android.os.AsyncTask;
+import android.widget.Toast;
+
+import com.example.brandonderbidge.familymapserver.httpclient.Server;
+import com.google.gson.Gson;
+
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+
+import Response.EventsResponse;
+import Response.PeopleResponse;
+import Response.PersonResponse;
+
+import static java.security.AccessController.getContext;
 
 /**
  * Created by brandonderbidge on 6/16/17.
@@ -127,4 +140,7 @@ public class Settings {
     public Map<String, Boolean> getGoogleMapType() {
         return googleMapType;
     }
+
+
+
 }

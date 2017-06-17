@@ -62,12 +62,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
             onMapReady(mMap);
 
-            if (Model.getSetting().getGoogleMapType().get("Hybrid"))
-                mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-            else if (Model.getSetting().getGoogleMapType().get("Satellite"))
-                mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-            else
-                mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+
         }
     }
 
@@ -306,6 +301,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         mMap = googleMap;
 
+
+
+
         if(mMap != null)
             mMap.clear();
 
@@ -347,6 +345,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
         });
 
+        if(Model.getSetting().getGoogleMapType().get("Hybrid"))
+            mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+        else if(Model.getSetting().getGoogleMapType().get("Satellite"))
+            mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+        else
+            mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
     }
 
