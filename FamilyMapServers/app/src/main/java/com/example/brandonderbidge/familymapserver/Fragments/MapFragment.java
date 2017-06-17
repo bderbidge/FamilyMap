@@ -1,7 +1,6 @@
 package com.example.brandonderbidge.familymapserver.Fragments;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -15,7 +14,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.brandonderbidge.familymapserver.Activities.FilterActivity;
+import com.example.brandonderbidge.familymapserver.Activities.MainActivity;
 import com.example.brandonderbidge.familymapserver.Activities.PersonActivity;
+import com.example.brandonderbidge.familymapserver.Activities.SettingsActivity;
 import com.example.brandonderbidge.familymapserver.Model;
 import com.example.brandonderbidge.familymapserver.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -57,8 +58,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void onResume() {
         super.onResume();
 
-        if(mMap != null)
+        if(mMap != null) {
+
             onMapReady(mMap);
+
+            if (Model.getSetting().getGoogleMapType().get("Hybrid"))
+                mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+            else if (Model.getSetting().getGoogleMapType().get("Satellite"))
+                mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+            else
+                mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        }
     }
 
     @Override
@@ -73,8 +83,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mapFragment.getMapAsync(this);
         setHasOptionsMenu(true);
 
-        mapType = getArguments().getBoolean("mapActivity");
-        eventFocus = getArguments().getString("eventID");
+        if(getArguments() != null) {
+            mapType = getArguments().getBoolean("mapActivity");
+            eventFocus = getArguments().getString("eventID");
+        }
 
         textEvent = (TextView) v.findViewById(R.id.map_event);
         textName = (TextView) v.findViewById(R.id.mapName);
@@ -105,8 +117,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         Model.clearPolyline();
 
 
-
-
         List<Event> tempEvents;
 
         Event event = Model.getEventMarkerToEvents().get(marker);
@@ -115,13 +125,30 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         tempEvents = Model.getPersonToEvents().get(person);
 
-        for (Event tempEvent : tempEvents) {
 
-            if(Model.getEventTypeMap().get(tempEvent.getEventType())) {
-                Polyline poly = drawLine(marker.getPosition(), tempEvent);
-                poly.setColor(Color.BLUE);
 
-                Model.getConnections().add(poly);
+        for (int i = 0; i < tempEvents.size() - 1 ; i++) {
+
+            if(Model.getEventTypeMap().get(tempEvents.get(i).getEventType())) {
+
+                LatLng templatlang = new LatLng(tempEvents.get(i).getLatitude(),
+                        tempEvents.get(i).getLongitude());
+
+                if(Model.getSetting().isLifeStoryBool()) {
+                    Polyline poly = drawLine(templatlang, tempEvents.get(i + 1));
+
+
+                    for (Map.Entry<Integer, Boolean> entry : Model.getSetting().getLifeStory().entrySet()) {
+
+                        if (entry.getValue() == true)
+                            poly.setColor(entry.getKey());
+
+                    }
+
+
+                    Model.getConnections().add(poly);
+                }
+
             }
         }
 
@@ -160,15 +187,33 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
                 if (person.getGender().equals("m") && Model.getEventTypeMap().get("By Female")) {
 
-                    Polyline poly = drawLine(marker.getPosition(), tempEvent.get(index));
-                    poly.setColor(Color.MAGENTA);
-                    Model.getConnections().add(poly);
+                    if(Model.getSetting().isSpouseBool() == true) {
+                        Polyline poly = drawLine(marker.getPosition(), tempEvent.get(index));
+
+                        for (Map.Entry<Integer, Boolean> entry : Model.getSetting().getSpouse().entrySet()) {
+
+                            if (entry.getValue() == true)
+                                poly.setColor(entry.getKey());
+
+                        }
+
+                        Model.getConnections().add(poly);
+                    }
 
                 } else if (person.getGender().equals("f") && Model.getEventTypeMap().get("By Male")) {
 
-                    Polyline poly = drawLine(marker.getPosition(), tempEvent.get(index));
-                    poly.setColor(Color.MAGENTA);
-                    Model.getConnections().add(poly);
+                    if(Model.getSetting().isSpouseBool() == true) {
+                        Polyline poly = drawLine(marker.getPosition(), tempEvent.get(index));
+
+                        for (Map.Entry<Integer, Boolean> entry : Model.getSetting().getSpouse().entrySet()) {
+
+                            if (entry.getValue() == true)
+                                poly.setColor(entry.getKey());
+
+                        }
+
+                        Model.getConnections().add(poly);
+                    }
                 }
             }
         }
@@ -215,10 +260,20 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         if(index < tempEvent.size()) {
 
-            Polyline polyline = drawLine(position, tempEvent.get(index));
-            polyline.setColor(Color.GREEN);
+            if(Model.getSetting().isFamilyTreeBool() == true) {
 
-            Model.getConnections().add(polyline);
+                Polyline polyline = drawLine(position, tempEvent.get(index));
+
+                for (Map.Entry<Integer, Boolean> entry : Model.getSetting().getFamilyTree().entrySet()) {
+
+                    if (entry.getValue() == true)
+                        polyline.setColor(entry.getKey());
+
+                }
+
+                Model.getConnections().add(polyline);
+
+            }
 
             tempos = new LatLng(tempEvent.get(index).getLatitude(), tempEvent.get(index).getLongitude());
         }
@@ -359,14 +414,22 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
+
+      boolean bool = super.onOptionsItemSelected(item);
         switch (item.getItemId()) {
             case R.id.action_filter:    Intent intent = new Intent( getContext() ,FilterActivity.class);
                                         startActivity(intent);
                                         break;
-
+            case R.id.up_bttn:          intent = new Intent(getContext(), MainActivity.class);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        startActivity(intent);
+                                        break;
+            case R.id.action_settings:  intent = new Intent(getContext(), SettingsActivity.class);
+                                        startActivity(intent);
+                                        break;
         }
 
-        return super.onOptionsItemSelected(item);
+        return bool;
     }
 }
 

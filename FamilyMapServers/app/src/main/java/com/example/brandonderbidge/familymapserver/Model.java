@@ -43,6 +43,7 @@ public class Model {
         eventTypeToColor = new HashMap<>();
         eventTypeMap = new HashMap<>();
         sortedEvents = new HashMap<>();
+        setting = new Settings();
 
     }
 
@@ -89,7 +90,12 @@ public class Model {
 
     private static Map<String, Event> sortedEvents;
 
+    private static Settings setting;
 
+
+    public static Settings getSetting() {
+        return setting;
+    }
 
     public static boolean isFilters() {
 
@@ -466,7 +472,7 @@ public class Model {
 
 
         Model.events = tempEvents;
-        
+
 
     }
 

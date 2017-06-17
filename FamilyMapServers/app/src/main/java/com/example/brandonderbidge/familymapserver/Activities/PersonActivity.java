@@ -7,6 +7,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -44,6 +46,7 @@ public class PersonActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+
         currentID = getIntent().getExtras().getString("PersonID");
 
         eventList = (RecyclerView) findViewById(R.id.recycle_event);
@@ -67,8 +70,6 @@ public class PersonActivity extends AppCompatActivity {
             gender.setText("Male");
         else
             gender.setText("Female");
-
-
 
 
 
@@ -166,6 +167,32 @@ public class PersonActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+       boolean bool = super.onOptionsItemSelected(item);
+        switch (item.getItemId()) {
+            case R.id.up_bttn:      Intent intent = new Intent( this , MainActivity.class);
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    startActivity(intent);
+                                    break;
+
+        }
+
+        return bool;
+
+
+    }
+
     private class EventAdapt extends RecyclerView.Adapter<EventHolder>
     {
         private List<Event> mevents;
@@ -194,6 +221,7 @@ public class PersonActivity extends AppCompatActivity {
         public int getItemCount() {
             return mevents.size();
         }
+
 
 
     }

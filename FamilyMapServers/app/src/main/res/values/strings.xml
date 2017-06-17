@@ -10,4 +10,24 @@
     <string name="title_activity_person">Person</string>
     <string name="title_activity_map_event">MapEventActivity</string>
     <string name="title_activity_filter">FilterActivity</string>
+    <string-array name="google_map_items">
+        <item>Normal</item>
+        <item>Hybrid</item>
+        <item>Satellite</item>
+    </string-array>
+    <string-array name="life_items">
+        <item>Blue</item>
+        <item>Green</item>
+        <item>Magenta</item>
+    </string-array>
+    <string-array name="family_items">
+        <item>Green</item>
+        <item>Blue</item>
+        <item>Magenta</item>
+    </string-array>
+    <string-array name="spouse_items">
+        <item>Magenta</item>
+        <item>Green</item>
+        <item>Blue</item>
+    </string-array>
 </resources>

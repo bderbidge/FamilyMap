@@ -43,11 +43,14 @@
         <activity
             android:name=".Activities.PersonActivity"
             android:label="@string/title_activity_person"
+            android:parentActivityName=".Activities.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activities.MapActivity"
-            android:label="@string/title_activity_map_event" />
-        <activity android:name=".Activities.FilterActivity"></activity>
+            android:label="@string/title_activity_map_event"
+            android:parentActivityName=".Activities.MainActivity" />
+        <activity android:name=".Activities.FilterActivity" />
+        <activity android:name=".Activities.SettingsActivity"></activity>
     </application>
 
 </manifest>
