@@ -50,7 +50,8 @@
             android:label="@string/title_activity_map_event"
             android:parentActivityName=".Activities.MainActivity" />
         <activity android:name=".Activities.FilterActivity" />
-        <activity android:name=".Activities.SettingsActivity"></activity>
+        <activity android:name=".Activities.SettingsActivity" />
+        <activity android:name=".Activities.SearchActivity"></activity>
     </application>
 
 </manifest>

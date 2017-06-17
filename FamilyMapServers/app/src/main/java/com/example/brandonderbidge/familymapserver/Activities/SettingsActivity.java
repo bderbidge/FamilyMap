@@ -1,5 +1,6 @@
 package com.example.brandonderbidge.familymapserver.Activities;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -36,8 +37,6 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
     Switch spouseSwitch;
     TextView reSync;
     TextView logout;
-    Callback callback;
-
 
 
     @Override
@@ -137,49 +136,70 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
         reSync.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Model.clearModel();
-            try{
-
-                URL url = new URL(
-                        "http",
-                        Model.getServerHost(),
-                        Model.getServerPort(),
-                        "/person/" + Model.getCurrentPerson().getId()
-
-                );
-
-                URL url2 = new URL(
-                        "http",
-                        Model.getServerHost(),
-                        Model.getServerPort(),
-                        "/event/"
-
-                );
-
-
-                URL url3 = new URL(
-                        "http",
-                        Model.getServerHost(),
-                        Model.getServerPort(),
-                        "/person/"
-
-                );
-
-                dataTask task = new dataTask();
-                task.execute(url, url2, url3);
-
-
-
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
+                setReSync();
             }
 
-        }
         });
 
 
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setLogout();
+            }
+        });
 
+    }
+
+
+    public void setLogout(){
+
+        Model.logout();
+        Intent intent = new Intent( this , MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
+    private void setReSync(){
+
+        Model.clearModel();
+        try{
+
+            URL url = new URL(
+                    "http",
+                    Model.getServerHost(),
+                    Model.getServerPort(),
+                    "/person/" + Model.getCurrentPerson().getId()
+
+            );
+
+            URL url2 = new URL(
+                    "http",
+                    Model.getServerHost(),
+                    Model.getServerPort(),
+                    "/event/"
+
+            );
+
+
+            URL url3 = new URL(
+                    "http",
+                    Model.getServerHost(),
+                    Model.getServerPort(),
+                    "/person/"
+
+            );
+
+            dataTask task = new dataTask();
+            task.execute(url, url2, url3);
+
+
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -272,9 +292,6 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
 
     }
 
-    public interface Callback{
-
-    }
 
     public class dataTask extends AsyncTask<URL, Void, String> {
 
@@ -330,6 +347,7 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
 
         protected void onPostExecute(String response){
 
+            finish();
         }
 
     }

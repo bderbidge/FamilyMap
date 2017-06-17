@@ -532,4 +532,14 @@ public class Model {
 
     }
 
+    public static void logout(){
+
+
+        authToken = "";
+        currentPerson = null;
+
+        clearModel();
+
+    }
+
 }

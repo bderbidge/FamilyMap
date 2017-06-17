@@ -135,7 +135,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
                     for (Map.Entry<Integer, Boolean> entry : Model.getSetting().getLifeStory().entrySet()) {
 
-                        if (entry.getValue() == true)
+                        if (entry.getValue())
                             poly.setColor(entry.getKey());
 
                     }
@@ -149,18 +149,19 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         LatLng position = marker.getPosition();
 
+        float width = 5;
 
         if (!person.getFatherID().equals(" ") && Model.getEventTypeMap().get("By Male")
                 && Model.getEventTypeMap().get("Father's Side")) {
 
-            ancestorDraw(Model.getPeople().get(person.getFatherID()), position);
+            ancestorDraw(Model.getPeople().get(person.getFatherID()), position, width);
 
         }
 
         if (!person.getMotherID().equals(" ")&& Model.getEventTypeMap().get("By Female")
                 && Model.getEventTypeMap().get("Mother's Side")) {
 
-            ancestorDraw(Model.getPeople().get(person.getMotherID()), position);
+            ancestorDraw(Model.getPeople().get(person.getMotherID()), position, width);
 
         }
 
@@ -237,7 +238,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     }
 
-    private void ancestorDraw(Person person, LatLng position) {
+    private void ancestorDraw(Person person, LatLng position, Float width) {
 
 
         List<Event> tempEvent = Model.getPersonToEvents().get(person);
@@ -265,7 +266,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                         polyline.setColor(entry.getKey());
 
                 }
-
+                polyline.setWidth(width);
                 Model.getConnections().add(polyline);
 
             }
@@ -273,15 +274,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             tempos = new LatLng(tempEvent.get(index).getLatitude(), tempEvent.get(index).getLongitude());
         }
 
+        width--;
         if (!person.getFatherID().equals(" ") && Model.getEventTypeMap().get("By Male")) {
 
-            ancestorDraw(Model.getPeople().get(person.getFatherID()), tempos);
+            ancestorDraw(Model.getPeople().get(person.getFatherID()), tempos, width);
 
         }
 
         if (!person.getMotherID().equals(" ") && Model.getEventTypeMap().get("By Female")) {
 
-            ancestorDraw(Model.getPeople().get(person.getMotherID()), tempos);
+            ancestorDraw(Model.getPeople().get(person.getMotherID()), tempos, width);
         }
 
 
