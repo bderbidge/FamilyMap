@@ -84,4 +84,10 @@ public class Person {
     public void setSpouseID(String spouseID) {
         SpouseID = spouseID;
     }
+
+    @Override
+    public String toString(){
+
+        return FirstName + " " + LastName;
+    }
 }

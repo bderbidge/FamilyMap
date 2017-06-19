@@ -64,6 +64,14 @@ public class Model {
 
     private static Set<String> maternalAncestors;
 
+    public static Set<String> getMaternalAncestors() {
+        return maternalAncestors;
+    }
+
+    public static Set<String> getPaternalAncestors() {
+        return paternalAncestors;
+    }
+
     private static Set<String> paternalAncestors;
 
     private static Set<String> eventTypes;
@@ -92,23 +100,8 @@ public class Model {
 
     private static Settings setting;
 
-
     public static Settings getSetting() {
         return setting;
-    }
-
-    public static boolean isFilters() {
-
-        filters = false;
-
-        for( Map.Entry<String, Boolean> entry :eventTypeMap.entrySet()){
-
-            if(entry.getValue() == false)
-                filters = true;
-
-        }
-
-        return filters;
     }
 
     public static Map<String, Boolean> getEventTypeMap() {
@@ -125,18 +118,6 @@ public class Model {
 
     public static Map<Marker, Person> getEventMarkerToPerson() {
         return eventMarkerToPerson;
-    }
-
-    public static void clearPolyline(){
-
-        for (Polyline p: connections) {
-
-            p.remove();
-
-        }
-
-        connections.clear();
-
     }
 
     public static List<Polyline> getConnections() {
@@ -195,74 +176,82 @@ public class Model {
         return people;
     }
 
-    public static void setPeople(PeopleResponse people) {
-
-        Map<String, Person> tempPeople = new HashMap<>();
-
-        for (PersonResponse person: people.getPeople()) {
-
-            String id = person.getpersonID();
-            Person tempPerson = new Person();
-
-            tempPerson.setUsername(person.getdescendant());
-            tempPerson.setSpouseID(person.getspouse());
-            tempPerson.setMotherID(person.getmother());
-            tempPerson.setFatherID(person.getfather());
-            tempPerson.setGender(person.getgender());
-            tempPerson.setFirstName(person.getfirstName());
-            tempPerson.setLastName(person.getlastName());
-            tempPerson.setId(person.getpersonID());
-
-
-            tempPeople.put(id, tempPerson);
-
-            addChildren(tempPerson);
-
-        }
-
-        Model.people = tempPeople;
-
-        Model.setMaternalAncestors();
-        Model.setPaternalAncestors();
-        personToEvents();
-    }
-
-    public static void addChildren(Person tempPerson){
-
-        if(!tempPerson.getFatherID().equals(" ")) {
-            if (personToChildren.containsKey(tempPerson.getFatherID())){
-
-                personToChildren.get(tempPerson.getFatherID()).add(tempPerson);
-
-            }else{
-
-                List<Person> personList = new LinkedList<>();
-
-                personList.add(tempPerson);
-                personToChildren.put(tempPerson.getFatherID(), personList);
-
-            }
-        }
-
-        if(!tempPerson.getMotherID().equals(" ")) {
-
-            if (personToChildren.containsKey(tempPerson.getMotherID())) {
-
-                personToChildren.get(tempPerson.getMotherID()).add(tempPerson);
-
-            } else {
-
-                List<Person> personList = new LinkedList<>();
-                personList.add(tempPerson);
-                personToChildren.put(tempPerson.getMotherID(), personList);
-            }
-        }
-
-
-    }
-
     public static Person getCurrentPerson() {
         return currentPerson;
+    }
+
+    public static Set<String> getEventTypes() {
+        return eventTypes;
+    }
+
+    public static Map<String, Event> getEvents() {
+        return events;
+    }
+
+    public static Person getFocusedPerson() {
+        return focusedPerson;
+    }
+
+    public static void setFocusedPerson(Person focusedPerson) {
+        Model.focusedPerson = focusedPerson;
+    }
+
+
+
+    public static boolean isFilters() {
+
+        filters = false;
+
+        for( Map.Entry<String, Boolean> entry :eventTypeMap.entrySet()){
+
+            if(entry.getValue() == false)
+                filters = true;
+
+        }
+
+        return filters;
+    }
+
+    public static void clearPolyline(){
+
+        for (Polyline p: connections) {
+
+            p.remove();
+
+        }
+
+        connections.clear();
+
+    }
+
+    public static void clearModel(){
+
+
+        people = new HashMap<>();
+        maternalAncestors = new HashSet<>();
+        paternalAncestors = new HashSet<>();
+        eventTypes = new HashSet<>();
+        events = new HashMap<>();
+        personToEvents = new HashMap<>();
+        connections = new LinkedList<>();
+        eventMarkerToEvents = new HashMap<>();
+        eventMarkerToPerson = new HashMap<>();
+        personToChildren = new HashMap<>();
+        eventTypeToColor = new HashMap<>();
+        eventTypeMap = new HashMap<>();
+        sortedEvents = new HashMap<>();
+        setting = new Settings();
+
+    }
+
+    public static void logout(){
+
+
+        authToken = "";
+        currentPerson = null;
+
+        clearModel();
+
     }
 
     public static Map<String, Event> getSortedList(){
@@ -275,14 +264,14 @@ public class Model {
         // first check if maternal or paternal are turned on
 
 
-       if(eventTypeMap.get("Father's Side") && eventTypeMap.get("Mother's Side")){
+        if(eventTypeMap.get("Father's Side") && eventTypeMap.get("Mother's Side")){
 
-           checkEvents(events);
+            checkEvents(events);
 
         }
         else if(eventTypeMap.get("Father's Side") || eventTypeMap.get("Mother's Side")) {
 
-           Map<String, Event> tempEvents = new HashMap<>();
+            Map<String, Event> tempEvents = new HashMap<>();
             if (!eventTypeMap.get("Father's Side")) {
 
 
@@ -290,7 +279,7 @@ public class Model {
 
                     for (Event event : personToEvents.get(people.get(person))) {
 
-                      tempEvents.put(event.getID(), event);
+                        tempEvents.put(event.getID(), event);
 
                     }
                 }
@@ -367,6 +356,111 @@ public class Model {
 
     }
 
+
+
+
+
+
+    public static void setPeople(PeopleResponse people) {
+
+        Map<String, Person> tempPeople = new HashMap<>();
+
+        for (PersonResponse person: people.getPeople()) {
+
+            String id = person.getpersonID();
+            Person tempPerson = new Person();
+
+            tempPerson.setUsername(person.getdescendant());
+            tempPerson.setSpouseID(person.getspouse());
+            tempPerson.setMotherID(person.getmother());
+            tempPerson.setFatherID(person.getfather());
+            tempPerson.setGender(person.getgender());
+            tempPerson.setFirstName(person.getfirstName());
+            tempPerson.setLastName(person.getlastName());
+            tempPerson.setId(person.getpersonID());
+
+
+            tempPeople.put(id, tempPerson);
+
+            addChildren(tempPerson);
+
+        }
+
+        Model.people = tempPeople;
+
+        Model.setMaternalAncestors();
+        Model.setPaternalAncestors();
+        personToEvents();
+    }
+
+
+
+
+    private static void personToEvents(){
+
+        for (Map.Entry<String, Person> person: people.entrySet()) {
+
+            List<Event> tempEventList = new LinkedList<>();
+
+            for (Map.Entry<String, Event> tempEvent :events.entrySet()) {
+
+                String id = tempEvent.getValue().getPersonId();
+                if(person.getKey().equals(id)){
+                    tempEventList.add(tempEvent.getValue());
+                }
+
+            }
+
+            Collections.sort(tempEventList);
+
+            for(Event str: tempEventList){
+                System.out.println(str);
+            }
+
+            personToEvents.put(person.getValue(), tempEventList);
+
+
+        }
+
+
+    }
+
+
+
+
+    /**
+    * This function recursively determines the ancestors for the side of the
+     * family being passed in.
+     * @param ancestor is the set of paternal or maternal ancestors being changed.
+    * */
+
+    private static Set<String> findAncestors(String id, Set<String> ancestor){
+
+
+
+        if(!Model.people.get(id).getFatherID().equals(" ")){
+
+            ancestor.add(id);
+
+            ancestor.add(Model.people.get(id).getFatherID());
+            ancestor = findAncestors(Model.people.get(id).getFatherID(), ancestor);
+        }
+
+
+        if(!Model.people.get(id).getMotherID().equals(" ")){
+
+            ancestor.add(Model.people.get(id).getMotherID());
+            ancestor = findAncestors(Model.people.get(id).getMotherID(), ancestor);
+
+        }
+
+        return ancestor;
+    }
+
+    /**
+    * This function determines all the ancestors on the user's mother side
+    */
+
     private static void setMaternalAncestors() {
 
         Set<String> maternalAncestors = new HashSet<>();
@@ -380,28 +474,10 @@ public class Model {
         Model.maternalAncestors = maternalAncestors;
     }
 
-    private static Set<String> findAncestors(String id, Set<String> ancestor){
 
-
-
-        if(!Model.people.get(id).getFatherID().equals(" ")){
-
-            ancestor.add(id);
-
-            ancestor.add(Model.people.get(id).getFatherID());
-           ancestor = findAncestors(Model.people.get(id).getFatherID(), ancestor);
-        }
-
-
-        if(!Model.people.get(id).getMotherID().equals(" ")){
-
-            ancestor.add(Model.people.get(id).getMotherID());
-           ancestor = findAncestors(Model.people.get(id).getMotherID(), ancestor);
-
-        }
-
-        return ancestor;
-    }
+    /**
+    * This function determines all the ancestors on the user's father side
+    */
 
     public static void setPaternalAncestors() {
 
@@ -416,13 +492,55 @@ public class Model {
         Model.paternalAncestors = paternalAncestors;
     }
 
-    public static Set<String> getEventTypes() {
-        return eventTypes;
+
+    /**
+     * This function checks if the person's father and mother have already been loaded into the
+     * people list. If they have then it assings the tempPerson as a child to the mother and
+     * fahter
+     *
+     * @param tempPerson the child we are trying to find parents for.
+     */
+    public static void addChildren(Person tempPerson){
+
+        if(!tempPerson.getFatherID().equals(" ")) {
+            if (personToChildren.containsKey(tempPerson.getFatherID())){
+
+                personToChildren.get(tempPerson.getFatherID()).add(tempPerson);
+
+            }else{
+
+                List<Person> personList = new LinkedList<>();
+
+                personList.add(tempPerson);
+                personToChildren.put(tempPerson.getFatherID(), personList);
+
+            }
+        }
+
+        if(!tempPerson.getMotherID().equals(" ")) {
+
+            if (personToChildren.containsKey(tempPerson.getMotherID())) {
+
+                personToChildren.get(tempPerson.getMotherID()).add(tempPerson);
+
+            } else {
+
+                List<Person> personList = new LinkedList<>();
+                personList.add(tempPerson);
+                personToChildren.put(tempPerson.getMotherID(), personList);
+            }
+        }
+
+
     }
 
-    public static Map<String, Event> getEvents() {
-        return events;
-    }
+
+    /**
+     * This function adds all the events to a map that will be used later for searching.
+     * It also puts all the event types into a set.
+     *
+     * @param events a map of event ids to each event.
+     */
 
     public static void setEvents(EventsResponse events) {
 
@@ -475,71 +593,5 @@ public class Model {
 
     }
 
-    private static void personToEvents(){
-
-        for (Map.Entry<String, Person> person: people.entrySet()) {
-
-            List<Event> tempEventList = new LinkedList<>();
-
-            for (Map.Entry<String, Event> tempEvent :events.entrySet()) {
-
-                String id = tempEvent.getValue().getPersonId();
-                if(person.getKey().equals(id)){
-                    tempEventList.add(tempEvent.getValue());
-                }
-
-            }
-
-            Collections.sort(tempEventList);
-
-            for(Event str: tempEventList){
-                System.out.println(str);
-            }
-
-            personToEvents.put(person.getValue(), tempEventList);
-
-
-        }
-
-
-    }
-
-    public static Person getFocusedPerson() {
-        return focusedPerson;
-    }
-
-    public static void setFocusedPerson(Person focusedPerson) {
-        Model.focusedPerson = focusedPerson;
-    }
-
-    public static void clearModel(){
-
-
-        people = new HashMap<>();
-        maternalAncestors = new HashSet<>();
-        paternalAncestors = new HashSet<>();
-        eventTypes = new HashSet<>();
-        events = new HashMap<>();
-        personToEvents = new HashMap<>();
-        connections = new LinkedList<>();
-        eventMarkerToEvents = new HashMap<>();
-        eventMarkerToPerson = new HashMap<>();
-        personToChildren = new HashMap<>();
-        eventTypeToColor = new HashMap<>();
-        eventTypeMap = new HashMap<>();
-        sortedEvents = new HashMap<>();
-        setting = new Settings();
-
-    }
-
-    public static void logout(){
-
-
-        authToken = "";
-        currentPerson = null;
-
-        clearModel();
-
-    }
 
 }

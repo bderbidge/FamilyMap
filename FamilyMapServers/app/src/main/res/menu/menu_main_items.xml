@@ -6,8 +6,7 @@
         android:id="@+id/action_filter"
         android:title="filter"/>
     <item
-        android:id="@+id/search_badge"
-
+        android:id="@+id/search_bttn"
         android:title="Search">
     </item>
     <item

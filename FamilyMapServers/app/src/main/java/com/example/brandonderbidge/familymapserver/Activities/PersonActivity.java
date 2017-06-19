@@ -329,8 +329,6 @@ public class PersonActivity extends AppCompatActivity {
 
         private void bind(Person p){
 
-
-
             ID = p.getId();
 
             String name = p.getFirstName() + " " +p.getLastName();

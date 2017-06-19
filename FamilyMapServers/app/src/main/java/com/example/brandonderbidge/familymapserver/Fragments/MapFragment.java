@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.example.brandonderbidge.familymapserver.Activities.FilterActivity;
 import com.example.brandonderbidge.familymapserver.Activities.MainActivity;
 import com.example.brandonderbidge.familymapserver.Activities.PersonActivity;
+import com.example.brandonderbidge.familymapserver.Activities.SearchActivity;
 import com.example.brandonderbidge.familymapserver.Activities.SettingsActivity;
 import com.example.brandonderbidge.familymapserver.Model;
 import com.example.brandonderbidge.familymapserver.R;
@@ -304,8 +305,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mMap = googleMap;
 
 
-
-
         if(mMap != null)
             mMap.clear();
 
@@ -433,9 +432,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             case R.id.action_settings:  intent = new Intent(getContext(), SettingsActivity.class);
                                         startActivity(intent);
                                         break;
+
+            case R.id.search_bttn:       intent = new Intent(getContext(), SearchActivity.class);
+                                         startActivity(intent);
+                                         break;
         }
 
         return bool;
     }
 }
+
 
