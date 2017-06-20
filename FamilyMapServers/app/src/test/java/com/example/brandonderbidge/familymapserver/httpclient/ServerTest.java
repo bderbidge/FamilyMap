@@ -12,6 +12,9 @@ import java.net.URL;
 import java.net.UnknownHostException;
 
 import Models.Login;
+import Response.EventResponse;
+import Response.EventsResponse;
+import Response.PeopleResponse;
 import Response.PersonResponse;
 import Response.RegisterLoginResponse;
 
@@ -44,7 +47,7 @@ public class ServerTest {
 
 
     @Test
-    public void register() throws Exception {
+    public void register()  {
 
         try {
             URL url = new URL(
@@ -76,7 +79,7 @@ public class ServerTest {
     }
 
     @Test
-    public void login() throws Exception {
+    public void login()  {
 
 
         try {
@@ -137,21 +140,87 @@ public class ServerTest {
                 Model.getCurrentPerson().setMotherID(personResponse.getmother());
                 Model.getCurrentPerson().setSpouseID(personResponse.getspouse());
                 Model.getCurrentPerson().setUsername(personResponse.getdescendant());
+
+                assertTrue(Model.getCurrentPerson().getUsername().equals(personResponse.getdescendant()));
             }
 
             } catch (MalformedURLException e) {
             e.printStackTrace();
         }
 
-    }
 
-    @Test
-    public void getPeople() throws Exception {
 
     }
 
     @Test
-    public void getEvents() throws Exception {
+    public void getPeople() {
+
+        try {
+            URL url = new URL(
+                    "http",
+                    Model.getServerHost(),
+                    Model.getServerPort(),
+                    "/person/"
+
+            );
+
+
+            String personEventResponse;
+            Gson gson = new Gson();
+            Server server = new Server();
+
+            personEventResponse = server.getPeople(url);
+
+            PeopleResponse peopleResponse = gson.fromJson(personEventResponse,PeopleResponse.class);
+
+
+            for (PersonResponse p: peopleResponse.getPeople()) {
+
+                if(p.getpersonID().equals("fd22497c-d097-4db2-bb3f-cc5a5c9723f6")) {
+                    assertTrue(true);
+                }
+            }
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Test
+    public void getEvents() {
+
+
+        try {
+            URL url = new URL(
+                    "http",
+                    Model.getServerHost(),
+                    Model.getServerPort(),
+                    "/event/"
+
+            );
+
+            String personEventResponse;
+            Gson gson = new Gson();
+            Server server = new Server();
+
+            personEventResponse =  server.getEvents(url);
+
+            EventsResponse eventsResponse = gson.fromJson(personEventResponse,EventsResponse.class);
+
+          for(EventResponse e: eventsResponse.getevents()){
+
+              if (e.geteventID().equals("910cdf7b-4f90-4a3e-97f2-635e85aa5149")){
+                  assertTrue(true);
+              }
+
+          }
+
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
 
     }
 
