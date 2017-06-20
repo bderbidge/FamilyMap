@@ -7,6 +7,8 @@ import org.junit.Test;
 import java.util.LinkedList;
 import java.util.List;
 
+import Response.EventResponse;
+import Response.EventsResponse;
 import Response.PeopleResponse;
 import Response.PersonResponse;
 
@@ -23,6 +25,103 @@ public class ModelTest {
     public void setUp() {
 
         Model.init();
+
+
+
+        EventResponse event = new EventResponse();
+
+        EventsResponse events = new EventsResponse();
+
+        List<EventResponse> eventList = new LinkedList<>();
+
+        event.setlongitude(22);
+        event.setlatitude(33);
+        event.setcountry("USA");
+        event.seteventType("Birth");
+        event.seteventID("1");
+        event.setdescendant("derb");
+        event.setPersonID("1");
+        event.setcity("China");
+        event.setyear(1993);
+
+        eventList.add(event);
+
+        EventResponse event1 = new EventResponse();
+
+        event1.setlongitude(22);
+        event1.setlatitude(33);
+        event1.setcountry("USA");
+        event1.seteventType("Baptism");
+        event1.seteventID("2");
+        event1.setdescendant("derb");
+        event1.setPersonID("1");
+        event1.setcity("China");
+        event1.setyear(1995);
+
+        eventList.add(event1);
+
+        EventResponse event2 = new EventResponse();
+
+        event2.setlongitude(22);
+        event2.setlatitude(33);
+        event2.setcountry("USA");
+        event2.seteventType("Mission");
+        event2.seteventID("3");
+        event2.setdescendant("derb");
+        event2.setPersonID("1");
+        event2.setcity("China");
+        event2.setyear(1997);
+
+        eventList.add(event2);
+
+        EventResponse event3 = new EventResponse();
+
+        event3.setlongitude(22);
+        event3.setlatitude(33);
+        event3.setcountry("USA");
+        event3.seteventType("Marriage");
+        event3.seteventID("4");
+        event3.setdescendant("derb");
+        event3.setPersonID("1");
+        event3.setcity("China");
+        event3.setyear(1999);
+
+        eventList.add(event3);
+
+        EventResponse event4 = new EventResponse();
+
+        event4.setlongitude(22);
+        event4.setlatitude(33);
+        event4.setcountry("USA");
+        event4.seteventType("job");
+        event4.seteventID("5");
+        event4.setdescendant("derb");
+        event4.setPersonID("1");
+        event4.setcity("China");
+        event4.setyear(2001);
+
+        eventList.add(event4);
+
+        EventResponse event5 = new EventResponse();
+
+        event5.setlongitude(22);
+        event5.setlatitude(33);
+        event5.setcountry("USA");
+        event5.seteventType("death");
+        event5.seteventID("6");
+        event5.setdescendant("derb");
+        event5.setPersonID("1");
+        event5.setcity("China");
+        event5.setyear(2003);
+
+        eventList.add(event5);
+
+        events.setevents(eventList);
+
+        Model.setEvents(events);
+
+
+
         List<PersonResponse> personList = new LinkedList<>();
 
         PersonResponse person = new PersonResponse();
@@ -134,6 +233,7 @@ public class ModelTest {
 
 
     //If the Model contains these ids then it is determining the paternal side correctly
+    //This Test also shows that I can test
     @Test
     public void checkPaternalChildrenAndMaternal(){
 
@@ -162,9 +262,39 @@ public class ModelTest {
 
         assertTrue(Model.getPeople().get("4").getSpouseID().equals("5"));
 
-
     }
 
+
+
+    //This tests event searching and the filter settings.
+    //It also shows that my set events function called in the setup function
+    //orders the event based on date.
+    @Test
+    public void filterAndSortEvents(){
+
+
+        assertTrue(Model.getPersonToEvents().get(Model.getPeople().get("1")).get(0)
+                .getEventType().equals("Birth"));
+        assertTrue(Model.getPersonToEvents().get(Model.getPeople().get("1")).get(5)
+                .getEventType().equals("death"));
+        assertTrue(Model.getPersonToEvents().get(Model.getPeople().get("1")).get(3)
+                .getEventType().equals("Marriage"));
+        assertFalse(Model.getPersonToEvents().get(Model.getPeople().get("1")).get(2)
+                .getEventType().equals("Birth"));
+        assertFalse(Model.getPersonToEvents().get(Model.getPeople().get("1")).get(4)
+                .getEventType().equals("death"));
+
+        Model.getEventTypeMap().put("Baptism", false);
+        Model.getEventTypeMap().put("Birth", false);
+        Model.getEventTypeMap().put("death", false);
+
+        Model.getSortedList();
+
+        assertFalse(Model.getSortedList().containsKey("1"));
+        assertFalse(Model.getSortedList().containsKey("2"));
+        assertFalse(Model.getSortedList().containsKey("6"));
+
+    }
 
 
 }

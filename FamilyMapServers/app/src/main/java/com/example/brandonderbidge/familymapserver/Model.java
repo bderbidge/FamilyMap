@@ -64,14 +64,6 @@ public class Model {
 
     private static Set<String> maternalAncestors;
 
-    public static Set<String> getMaternalAncestors() {
-        return maternalAncestors;
-    }
-
-    public static Set<String> getPaternalAncestors() {
-        return paternalAncestors;
-    }
-
     private static Set<String> paternalAncestors;
 
     private static Set<String> eventTypes;
@@ -99,6 +91,16 @@ public class Model {
     private static Map<String, Event> sortedEvents;
 
     private static Settings setting;
+
+
+
+    public static Set<String> getMaternalAncestors() {
+        return maternalAncestors;
+    }
+
+    public static Set<String> getPaternalAncestors() {
+        return paternalAncestors;
+    }
 
     public static Settings getSetting() {
         return setting;
